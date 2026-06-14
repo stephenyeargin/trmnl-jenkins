@@ -1,0 +1,23 @@
+# TRMNLP configuration
+# {{ env.VARIABLE }} interpolation is available here
+---
+# auto-reload when files change (`watch: false` to disable)
+watch:
+  - .trmnlp.yml
+  - src
+
+# values of custom fields (defined in src/settings.yml)
+custom_fields: {
+  jenkins_url: '{{ env.JENKINS_URL }}',
+  jenkins_auth_user: '{{ env.JENKINS_AUTH_USER }}',
+  jenkins_auth_token: '{{ env.JENKINS_AUTH_TOKEN }}',
+  # jenkins_job_name: 'directory.utmsigep.org - Deploy to Production'
+}
+
+# override variables
+variables:
+  trmnl: {
+    plugin_settings: {
+      instance_name: 'Jenkins'
+    }
+  }

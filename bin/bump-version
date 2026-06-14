@@ -1,0 +1,63 @@
+#!/bin/bash
+
+# Simple script to bump version in VERSION file
+# Usage: ./bump-version.sh [major|minor|patch]
+
+set -e
+
+# Check for unstaged changes
+if [[ -n $(git status --porcelain | grep '^[^?]') ]]; then
+  echo "Error: You have unstaged changes. Please commit or stash them before bumping the version."
+  exit 1
+fi
+
+CURRENT_VERSION=$(cat VERSION | tr -d '\n\r' | xargs)
+TYPE=${1:-patch}
+
+echo "Current version: $CURRENT_VERSION"
+
+# Split version into parts
+IFS='.' read -ra VERSION_PARTS <<< "$CURRENT_VERSION"
+MAJOR=${VERSION_PARTS[0]}
+MINOR=${VERSION_PARTS[1]}
+PATCH=${VERSION_PARTS[2]}
+
+case $TYPE in
+  major)
+    MAJOR=$((MAJOR + 1))
+    MINOR=0
+    PATCH=0
+    ;;
+  minor)
+    MINOR=$((MINOR + 1))
+    PATCH=0
+    ;;
+  patch)
+    PATCH=$((PATCH + 1))
+    ;;
+  *)
+    echo "Usage: $0 [major|minor|patch]"
+    echo "  major: Increment major version (x.0.0)"
+    echo "  minor: Increment minor version (x.y.0)" 
+    echo "  patch: Increment patch version (x.y.z)"
+    exit 1
+    ;;
+esac
+
+NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+echo "$NEW_VERSION" > VERSION
+
+echo "Version bumped to: $NEW_VERSION"
+
+# Add and commit the VERSION file
+git add VERSION
+git commit -m "Bump version to $NEW_VERSION"
+
+# Prompt to push
+read -p "Do you want to push the version now? [y/N]: " PUSH_NOW
+if [[ "$PUSH_NOW" =~ ^[Yy]$ ]]; then
+  git push origin main
+  echo "Version pushed to origin/main."
+else
+  echo "Version not pushed. You can push later with: git push origin main"
+fi

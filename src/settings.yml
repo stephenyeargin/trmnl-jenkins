@@ -1,0 +1,71 @@
+---
+strategy: polling
+no_screen_padding: 'no'
+dark_mode: 'no'
+static_data: ''
+polling_verb: get
+framework_version: latest
+serverless_language: node
+polling_url: |
+  {{ jenkins_url }}/computer/api/json?tree=computer[displayName,offline,temporarilyOffline,numExecutors,busyExecutors,idleExecutors]
+  {{ jenkins_url }}/api/json?tree=jobs[name,url,color,description,buildable,inQueue,healthReport[score,description],lastBuild[number,result,timestamp,duration,url],lastCompletedBuild[number,result,timestamp,duration,url],lastSuccessfulBuild[number,result,timestamp,url],lastFailedBuild[number,result,timestamp,url]]
+  {{ jenkins_url }}/job/{{ jenkins_job_name | url_encode | replace: '+', '%20' }}/api/json?tree=name,builds[number,result,timestamp,duration,url,description]
+polling_headers: 'Authorization=Basic%20{{ jenkins_auth_user | append: '':'' | append: jenkins_auth_token | base64_encode }}'
+polling_body: 
+id: 336671
+custom_fields:
+- keyname: author_bio
+  name: About This Plugin
+  field_type: author_bio
+  description: Show the status for your most recent Jenkins jobs and build details.
+  github_url: https://github.com/stephenyeargin/trmnl-jenkins
+  learn_more_url: https://jenkins.io/
+  email_address: stephen@yearg.in
+- keyname: jenkins_url
+  field_type: string
+  name: Jenkins URL
+  description: Base URL of the Jenkins instance, no trailing slash.
+  placeholder: https://jenkins.example.com
+- keyname: jenkins_auth_user
+  field_type: string
+  name: User ID
+  description: Owner of the authentication token below.
+  placeholder: janedoe
+- keyname: jenkins_auth_token
+  field_type: password
+  name: Auth Token
+  description: Generated authentication token that provides read-only access.
+  placeholder: abc123def456abc789def000
+- keyname: job_sort_order
+  field_type: select
+  name: Job Sort Order
+  description: Order in which jobs are displayed.
+  options:
+  - Alphabetical: alpha
+  - Most Recent Run: recent_run
+  - Most Recent Failure: recent_failure
+  default: alpha
+- keyname: exclude_disabled_jobs
+  field_type: boolean
+  name: Exclude Disabled Jobs
+  description: Hide disabled jobs from the jobs list.
+  default: false
+- keyname: job_status_filter
+  field_type: select
+  name: Job Status Filter
+  description: Only show jobs matching these statuses. Leave blank to show all.
+  multiple: true
+  optional: true
+  options:
+  - Success: blue
+  - Failure: red
+  - Unstable: yellow
+  - Not Built: notbuilt
+- keyname: jenkins_job_name
+  field_type: string
+  name: Job Name (Optional)
+  description: Enter the name of a specific job to show builds, leave blank to show all jobs
+  placeholder: Integration Testing Pipeline
+  optional: true
+name: Jenkins CI/CD
+refresh_interval: 1440

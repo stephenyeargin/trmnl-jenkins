@@ -1,0 +1,12 @@
+<div class="layout layout--row layout--top">
+  {% if builds and builds.size > 0 %}
+    {% render 'builds_table' builds: builds, trmnl: trmnl, is_compact: true  %}
+  {% else %}
+  {% render 'jobs_table' jobs: jobs, trmnl: trmnl, is_compact: true %}
+  {% endif %}
+</div>
+
+<div class="title_bar">
+  <img class="image image-stroke--medium" src="data:image/svg+xml;base64,{{ logo_svg | base64_encode }}" />
+  <span class="title" data-clamp="1">{{ trmnl.plugin_settings.custom_fields_values.jenkins_job_name | default: executor_status }}</span>
+</div>
