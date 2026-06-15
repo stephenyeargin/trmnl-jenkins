@@ -9,7 +9,9 @@ serverless_language: node
 polling_url: |
   {{ jenkins_url }}/computer/api/json?tree=computer[displayName,offline,temporarilyOffline,numExecutors,busyExecutors,idleExecutors]
   {{ jenkins_url }}/api/json?tree=jobs[name,url,color,description,buildable,inQueue,healthReport[score,description],lastBuild[number,result,timestamp,duration,url],lastCompletedBuild[number,result,timestamp,duration,url],lastSuccessfulBuild[number,result,timestamp,url],lastFailedBuild[number,result,timestamp,url]]
+  {%- if jenkins_job_name %}
   {{ jenkins_url }}/job/{{ jenkins_job_name | url_encode | replace: '+', '%20' }}/api/json?tree=name,builds[number,result,timestamp,duration,url,description]
+  {%- endif %}
 polling_headers: 'Authorization=Basic%20{{ jenkins_auth_user | append: '':'' | append: jenkins_auth_token | base64_encode }}'
 polling_body: 
 id: 336671
