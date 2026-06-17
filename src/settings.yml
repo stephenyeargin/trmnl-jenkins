@@ -47,7 +47,7 @@ custom_fields:
   - Alphabetical: alpha
   - Most Recent Run: recent_run
   - Most Recent Failure: recent_failure
-  default: alpha
+  default: recent_run
 - keyname: exclude_disabled_jobs
   field_type: boolean
   name: Exclude Disabled Jobs

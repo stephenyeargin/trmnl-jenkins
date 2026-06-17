@@ -135,7 +135,7 @@ Jenkins CI
       <td>
         <span class="label label--small">
         {% if job.lastSuccessfulBuild and job.lastSuccessfulBuild.timestamp %}
-        {{ job.lastSuccessfulBuild.timestamp | divided_by: 1000 | l_date: '%y %b %l:%M %P', trmnl.user.locale }}
+        {{ job.lastSuccessfulBuild.timestamp | divided_by: 1000 | l_date: '%-d %b %l:%M %P', trmnl.user.locale }}
         {% if job.lastSuccessfulBuild.number %}
         <span class="label label--small label--outline ml--1">{{ job.lastSuccessfulBuild.number }}</div>
         {% endif %}
@@ -147,7 +147,7 @@ Jenkins CI
       <td>
         <span class="label label--small">
         {% if job.lastFailedBuild and job.lastFailedBuild.timestamp %}
-        {{ job.lastFailedBuild.timestamp | divided_by: 1000 | l_date: '%y %b %l:%M %P', trmnl.user.locale }}
+        {{ job.lastFailedBuild.timestamp | divided_by: 1000 | l_date: '%-d %b %l:%M %P', trmnl.user.locale }}
         {% if job.lastFailedBuild.number %}
         <span class="label label--small label--outline ml--1">{{ job.lastFailedBuild.number }}</span>
         {% endif %}
@@ -249,7 +249,7 @@ Jenkins CI
       </td>
       {% unless is_compact == true %}
       <td>
-        <span class="label label--small">{{ build.timestamp | divided_by: 1000 | l_date: '%y %b %l:%M %P', trmnl.user.locale }}</span>
+        <span class="label label--small">{{ build.timestamp | divided_by: 1000 | l_date: '%-d %b %l:%M %P', trmnl.user.locale }}</span>
       </td>
       <td>
         <span class="label label--small">
