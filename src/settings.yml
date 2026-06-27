@@ -27,7 +27,7 @@ custom_fields:
 - keyname: jenkins_url
   field_type: string
   name: Jenkins URL
-  description: Base URL of the Jenkins instance, no trailing slash. Optionally add `job/MyFolderName` to show a jobs subfolder.
+  description: Base URL of the Jenkins instance, no trailing slash. Optionally add `job/MyFolderName` to show a job's subfolder.
   placeholder: https://jenkins.example.com
 - keyname: jenkins_auth_user
   field_type: string
