@@ -6,14 +6,9 @@ static_data: ''
 polling_verb: get
 framework_version: latest
 serverless_language: node
-polling_url: |
-  {{ jenkins_url }}/computer/api/json?tree=computer[displayName,offline,temporarilyOffline,numExecutors,busyExecutors,idleExecutors]
-  {{ jenkins_url }}/api/json?tree=jobs[name,url,color,description,buildable,inQueue,healthReport[score,description],lastBuild[number,result,timestamp,duration,url],lastCompletedBuild[number,result,timestamp,duration,url],lastSuccessfulBuild[number,result,timestamp,url],lastFailedBuild[number,result,timestamp,url]]
-  {%- if jenkins_job_name %}
-  {{ jenkins_url }}/job/{{ jenkins_job_name | url_encode | replace: '+', '%20' }}/api/json?tree=name,builds[number,result,timestamp,duration,url,description]
-  {%- endif %}
+polling_url: "{{ jenkins_url }}/computer/api/json?tree=computer[displayName,offline,temporarilyOffline,numExecutors,busyExecutors,idleExecutors]\r\n{{ jenkins_url }}/api/json?tree=jobs[name,url,color,description,buildable,inQueue,healthReport[score,description],lastBuild[number,result,timestamp,duration,url],lastCompletedBuild[number,result,timestamp,duration,url],lastSuccessfulBuild[number,result,timestamp,url],lastFailedBuild[number,result,timestamp,url]]\r\n{%- if jenkins_job_name %}\r\n{{ jenkins_url }}/job/{{ jenkins_job_name | url_encode | replace: '+', '%20' }}/api/json?tree=name,builds[number,result,timestamp,duration,url,description]\r\n{%- endif %}\r\n"
 polling_headers: 'Authorization=Basic%20{{ jenkins_auth_user | append: '':'' | append: jenkins_auth_token | base64_encode }}'
-polling_body: 
+polling_body: ''
 id: 336671
 custom_fields:
 - keyname: author_bio
@@ -71,4 +66,4 @@ custom_fields:
   placeholder: Integration Testing Pipeline
   optional: true
 name: Jenkins CI/CD
-refresh_interval: 1440
+refresh_interval: 15
