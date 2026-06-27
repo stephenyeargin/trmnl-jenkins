@@ -18,10 +18,11 @@ function transform(input) {
       }))
     : [];
 
-  let jobs = (input.IDX_1 && Array.isArray(input.IDX_1.jobs))
-    ? input.IDX_1.jobs.map((job) => ({
+  const rawJobs = (input.IDX_1 && Array.isArray(input.IDX_1.jobs)) ? input.IDX_1.jobs : [];
+
+  let jobs = rawJobs.map((job) => ({
         name: job.name || "",
-        color: job.color || "unknown",
+        color: job.color || null,
         healthReport: Array.isArray(job.healthReport)
           ? job.healthReport.slice(0, 1).map((report) => ({
               score: Number(report.score || 0),
@@ -52,8 +53,10 @@ function transform(input) {
               timestamp: Number(job.lastFailedBuild.timestamp || 0),
             }
           : null,
-      }))
-    : [];
+      }));
+
+  const folderCount = jobs.filter((job) => job.color === null).length;
+  jobs = jobs.filter((job) => job.color !== null);
 
   if (excludeDisabled) {
     jobs = jobs.filter((job) => !job.color.startsWith("disabled"));
@@ -96,6 +99,8 @@ function transform(input) {
     },
     IDX_1: {
       jobs,
+      jobs_total: rawJobs.length - folderCount,
+      jobs_folder_count: folderCount,
     },
     IDX_2: {
       builds,

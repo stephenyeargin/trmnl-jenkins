@@ -11,7 +11,7 @@ custom_fields: {
   jenkins_url: '{{ env.JENKINS_URL }}',
   jenkins_auth_user: '{{ env.JENKINS_AUTH_USER }}',
   jenkins_auth_token: '{{ env.JENKINS_AUTH_TOKEN }}',
-  # jenkins_job_name: 'directory.utmsigep.org - Deploy to Production'
+  # jenkins_job_name: 'directory.utmsigep.org - Deploy to Production',
   job_sort_order: recent_run
 }
 

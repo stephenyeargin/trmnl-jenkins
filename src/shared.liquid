@@ -100,8 +100,11 @@ Jenkins CI
     {% assign status_icon = icon_job_unstable %}
     {% when 'disabled' %}
     {% assign status_icon = icon_job_disabled %}
+    {% when 'notbuilt' %}
+    {% assign status_icon = icon_job_disabled %}
     {% endcase %}
 
+    {% if health %}
     {% assign health_score = health.score | default: 0 %}
     {% assign health_icon = icon_health_stormy %}
     {% if health_score >= 80 %}
@@ -112,6 +115,9 @@ Jenkins CI
     {% assign health_icon = icon_health_cloudy %}
     {% elsif health_score >= 21 %}
     {% assign health_icon = icon_health_raining %}
+    {% endif %}
+    {% else %}
+    {% assign health_icon = icon_job_unknown %}
     {% endif %}
 
     {% assign duration_seconds = 0 %}
@@ -180,7 +186,15 @@ Jenkins CI
     </tr>
     {% else %}
     <tr>
-      <td class="description my--8" colspan="99">No jobs returned from Jenkins.</td>
+      <td class="description my--8" colspan="99">
+        {% if IDX_1.jobs_total > 0 %}
+        No jobs matched your filters. Check Job Status Filter and Exclude Disabled Jobs settings.
+        {% elsif IDX_1.jobs_folder_count > 0 %}
+        No buildable jobs found at this level. Use the Folder setting to scope into a specific project.
+        {% else %}
+        No jobs found in Jenkins.
+        {% endif %}
+      </td>
     </tr>
     {% endfor %}
   </tbody>
@@ -275,7 +289,7 @@ Jenkins CI
     </tr>
     {% else %}
     <tr>
-      <td class="description my--8" colspan="99">No builds returned from Jenkins.</td>
+      <td class="description my--8" colspan="99">No builds found. Verify the Job Name setting matches an existing Jenkins job.</td>
     </tr>
     {% endfor %}
   </tbody>
