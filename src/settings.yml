@@ -6,10 +6,43 @@ static_data: ''
 polling_verb: get
 framework_version: latest
 serverless_language: node
-polling_url: "{{ jenkins_url }}/computer/api/json?tree=computer[displayName,offline,temporarilyOffline,numExecutors,busyExecutors,idleExecutors]\r\n{{ jenkins_url }}/api/json?tree=jobs[name,url,color,description,buildable,inQueue,healthReport[score,description],lastBuild[number,result,timestamp,duration,url],lastCompletedBuild[number,result,timestamp,duration,url],lastSuccessfulBuild[number,result,timestamp,url],lastFailedBuild[number,result,timestamp,url]]\r\n{%- if jenkins_job_name %}\r\n{{ jenkins_url }}/job/{{ jenkins_job_name | url_encode | replace: '+', '%20' }}/api/json?tree=name,builds[number,result,timestamp,duration,url,description]\r\n{%- endif %}\r\n"
+polling_url: |
+  {{ jenkins_url }}/computer/api/json?tree=computer[displayName,offline,temporarilyOffline,numExecutors,busyExecutors,idleExecutors]
+  {%- if jenkins_job_folder %}
+  {{ jenkins_url }}/job/{{ jenkins_job_folder | replace: '/', '/job/' }}/api/json?tree=jobs[name,url,color,description,buildable,inQueue,healthReport[score,description],lastBuild[number,result,timestamp,duration,url],lastCompletedBuild[number,result,timestamp,duration,url],lastSuccessfulBuild[number,result,timestamp,url],lastFailedBuild[number,result,timestamp,url]]
+  {%- else %}
+  {{ jenkins_url }}/api/json?tree=jobs[name,url,color,description,buildable,inQueue,healthReport[score,description],lastBuild[number,result,timestamp,duration,url],lastCompletedBuild[number,result,timestamp,duration,url],lastSuccessfulBuild[number,result,timestamp,url],lastFailedBuild[number,result,timestamp,url]]
+  {%- endif %}
+  {%- if jenkins_job_name %}
+  {%- if jenkins_job_folder %}
+  {{ jenkins_url }}/job/{{ jenkins_job_folder | replace: '/', '/job/' }}/job/{{ jenkins_job_name | url_encode | replace: '+', '%20' }}/api/json?tree=name,builds[number,result,timestamp,duration,url,description]
+  {%- else %}
+  {{ jenkins_url }}/job/{{ jenkins_job_name | url_encode | replace: '+', '%20' }}/api/json?tree=name,builds[number,result,timestamp,duration,url,description]
+  {%- endif %}
+  {%- endif %}
 polling_headers: 'Authorization=Basic%20{{ jenkins_auth_user | append: '':'' | append: jenkins_auth_token | base64_encode }}'
 polling_body: ''
 id: 336671
+oauth_enabled: 'false'
+oauth_pkce_enabled: 'no'
+oauth_authorize_url: ''
+oauth_token_url: ''
+oauth_scopes: ''
+oauth_scope_separator: ''
+oauth_refresh_url: ''
+oauth_auth_params: ''
+oauth_token_headers: ''
+oauth_token_site: ''
+oauth_token_params: ''
+oauth_token_request_auth_method: ''
+oauth_body_format: ''
+oauth_token_response_metadata: ''
+oauth_authorization_method: ''
+oauth_refresh_params: ''
+oauth_token_field_name: ''
+oauth_expiry_field_name: ''
+oauth_expiry_strategy: ''
+oauth_fixed_expiry_ms: ''
 custom_fields:
 - keyname: author_bio
   name: About This Plugin
@@ -22,7 +55,7 @@ custom_fields:
 - keyname: jenkins_url
   field_type: string
   name: Jenkins URL
-  description: Base URL of the Jenkins instance, no trailing slash. Optionally add `job/MyFolderName` to show a job's subfolder.
+  description: Base URL of the Jenkins instance, without a trailing slash.
   placeholder: https://jenkins.example.com
 - keyname: jenkins_auth_user
   field_type: string
@@ -62,8 +95,14 @@ custom_fields:
 - keyname: jenkins_job_name
   field_type: string
   name: Job Name (Optional)
-  description: Enter the name of a specific job to show builds, leave blank to show all jobs
+  description: Enter the name of a specific job to show builds, leave blank to show all jobs.
   placeholder: Integration Testing Pipeline
+  optional: true
+- keyname: jenkins_job_folder
+  field_type: string
+  name: Job Folder (Optional)
+  description: If your jobs are nested in folders, enter the folder path without a trailing slash. Use slashes to separate nested folders (e.g. MyFolder/MySubfolder).
+  placeholder: MyFolder/MySubfolder
   optional: true
 name: Jenkins CI/CD
 refresh_interval: 15
