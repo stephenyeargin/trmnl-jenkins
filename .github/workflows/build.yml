@@ -12,6 +12,9 @@ permissions:
   pull-requests: write
   deployments: write
 
+env:
+  RUBY_VERSION: '4.0'
+
 jobs:
   build:
     name: Verify `trnmlp build` succeeds
@@ -24,7 +27,7 @@ jobs:
         id: setup-ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '4.0'
+          ruby-version: ${{ env.RUBY_VERSION }}
           bundler-cache: true
 
       - name: Resolve RubyGems user dir
@@ -173,7 +176,7 @@ jobs:
         id: setup-ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.4'
+          ruby-version: ${{ env.RUBY_VERSION }}
           bundler-cache: true
 
       - name: Resolve RubyGems user dir
