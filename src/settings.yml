@@ -105,4 +105,5 @@ custom_fields:
   placeholder: MyFolder/MySubfolder
   optional: true
 name: Jenkins CI/CD
+description: Monitor Jenkins job status and build health
 refresh_interval: 15
